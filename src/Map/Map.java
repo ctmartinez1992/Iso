@@ -1,8 +1,8 @@
 package Map;
 
 import Build.Build;
+import Entity.Entity;
 import Util.Math.Int2;
-import Util.Math.MyMath;
 import Tile.GroundTiles.*;
 import Tile.Tile;
 import Util.GUI.GUI;
@@ -27,12 +27,19 @@ public class Map {
     private Tile[] sortedTiles;
     
     private ArrayList<Build> builds;
+    
+    private ArrayList<Entity> entities;
+    
+    private ArrayList<Object> renderList;
 
     private Vector2f origin;
     private Vector2f right;
     private Vector2f down;
     
     private boolean doBuild;
+    private boolean doTile;
+    private boolean doPeasant;
+    private boolean sortRenderList;
 
     public Map(int gridWidth, int gridHeight, int tileWidth) {
         UV.gridWidth = gridWidth;
@@ -46,7 +53,14 @@ public class Map {
         builds = new ArrayList();
         UV.choosingBuild = null;
         
+        entities = new ArrayList();
+        
+        renderList = new ArrayList();
+        
         doBuild = false;
+        doTile = false;
+        doPeasant = false;
+        sortRenderList = false;
     }
     
     public void init(GameContainer container) {
@@ -83,7 +97,18 @@ public class Map {
     public void update(GameContainer container, int delta) {
         if (UV.initChoosedBuild) {
             UV.initChoosedBuild = false;
-            UV.choosingBuild.init(tiles[UV.mapX * UV.gridWidth + UV.mapY].getPosition(), getGridCoords(UV.mouseX, UV.mouseY));
+            UV.choosingBuild.init(tiles[UV.mapX * UV.gridWidth + UV.mapY].getPosition(), new Int2(UV.mapX, UV.mapY));
+            UV.choosingBuild.setGridPositionProperly(UV.mapX, UV.mapY);
+        }
+        
+        if (UV.initChoosedTile) {
+            UV.initChoosedTile = false;
+            UV.choosingTile.init(tiles[UV.mapX * UV.gridWidth + UV.mapY].getPosition());
+        }
+        
+        if (UV.initChoosedPeasant) {
+            UV.initChoosedPeasant = false;
+            UV.choosingPeasant.init((int) tiles[UV.mapX * UV.gridWidth + UV.mapY].getPosition().x, (int) tiles[UV.mapX * UV.gridWidth + UV.mapY].getPosition().y);
         }
         
         for (Tile tile : sortedTiles) {
@@ -93,6 +118,10 @@ public class Map {
         int position = UV.mapX * UV.gridHeight + UV.mapY;
         if (position >= 0 && position < (UV.gridHeight * UV.gridWidth) && isInBoundaries(UV.mapX, UV.mapY)) {
             tiles[position].setHighlight(true);
+        }
+        
+        for (Entity entity : entities) {
+            entity.update(container);
         }
     }
 
@@ -112,12 +141,27 @@ public class Map {
             graphics.draw(square);
         }
         
-        for (Build build : builds) {
-            build.render(container, graphics);
+        for (Object object : renderList) {
+            if (object instanceof Build) {
+                ((Build)object).render(container, graphics);
+            } else {
+                ((Entity)object).render(container, graphics);
+            }
+        }
+                
+        if (UV.choosingBuild != null && !UV.initChoosedBuild) {
+            UV.choosingBuild.renderTranslucent(container, graphics, doBuild);
         }
         
-        if (UV.choosingBuild != null) {
-            UV.choosingBuild.renderTranslucent(container, graphics, doBuild);
+        if (UV.choosingTile != null && !UV.initChoosedTile) {
+            UV.choosingTile.renderTranslucent(container, graphics, doTile);
+            for (Tile tile : UV.choosingSquareTiles) {
+                tile.renderTranslucent(container, graphics, doTile);
+            }
+        }        
+            
+        if (UV.choosingPeasant != null && !UV.initChoosedPeasant) {
+            UV.choosingPeasant.renderTranslucent(container, graphics, doPeasant);
         }
     }
     
@@ -127,97 +171,231 @@ public class Map {
      * INPUT HANDLERS
      * 
      */
+
     
-    public void mouseMoved(int oldX, int oldY, int newX, int newY) {
-        Int2 coords = getGridCoords(newX, newY);
+    public void mouseLeftPressed(int button, int x, int y) {
         doBuild = false;
+        doTile = false;
+        doPeasant = false;
         
-        if (UV.choosingBuild != null) {
-            if (isInBoundaries(coords.getX(), coords.getY())) {
-                UV.choosingBuild.setPosition(tiles[coords.getX() * UV.gridWidth + coords.getY()].getPosition());
-                UV.choosingBuild.setGridPosition(coords);
-                
+        if (GUI.showConstructionLeftMenu) {
+            if (isInBoundaries(UV.mapX, UV.mapY) && UV.choosingBuild != null) {            
                 doBuild = true;
-                for(Build build : builds) {
-                    if (MyMath.boxIntersect(UV.choosingBuild.getGridPosition(), UV.choosingBuild.getTileSpace(), build.getGridPosition(), build.getTileSpace())) {
+                for (Build build : builds) {                
+                    if (UV.choosingBuild.getAABB().overlaps(build.getAABB())) {
                         doBuild = false;
                         break;
                     }
                 }
             }
         }
-    }
-
-    public void mousePressed(int button, int x, int y) {
-        doBuild = false;
         
-        if (isInBoundaries(UV.mapX, UV.mapY) && UV.choosingBuild != null) {            
-            doBuild = true;
-            for (Build build : builds) {
+        if (GUI.showTileLeftMenu) {
+            if (isInBoundaries(UV.mapX, UV.mapY) && UV.choosingTile != null) {            
+                doTile = true;
+                UV.tileDrawStarted.set(UV.mapX, UV.mapY);
+                UV.choosingSquareTiles.add(UV.choosingTile.cloneTile(UV.choosingTile.getPosition()));
+            }
+        }
+        
+        if (GUI.showPeasantLeftMenu) {
+            if (isInBoundaries(UV.mapX, UV.mapY) && UV.choosingPeasant != null) {            
+                doPeasant = true;
+            }
+        }
+    }
+    
+    public void mouseRightPressed(int button, int x, int y) {
+    }
+    
+    public void mouseMoved(int oldX, int oldY, int newX, int newY) {
+        doBuild = false;
+        doTile = false;
+        doPeasant = false;
+        
+        Int2 coords = getGridCoords(newX, newY);
+        int index = coords.getX() * UV.gridWidth + coords.getY();
+        
+        if (UV.choosingBuild != null) {
+            if (isInBoundaries(coords.getX(), coords.getY())) {
+                UV.choosingBuild.setPositionProperly(tiles[index].getPosition());
+                UV.choosingBuild.setGridPositionProperly(coords.getX(), coords.getY());
                 
-                UV.choosingBuild.getGridPosition();
-                UV.choosingBuild.getTileSpace();
-                build.getGridPosition();
-                build.getTileSpace();
-                
-                if (MyMath.boxIntersect(UV.choosingBuild.getGridPosition(), UV.choosingBuild.getTileSpace(), build.getGridPosition(), build.getTileSpace())) {
-                    doBuild = false;
-                    break;
+                doBuild = true;
+                for(Build build : builds) {
+                    if (UV.choosingBuild.getAABB() != null || UV.choosingBuild.getAABBEntrance()!= null || build.getAABB() != null || build.getAABBEntrance() != null) {
+                        if (UV.choosingBuild.getAABB().overlaps(build.getAABB()) || UV.choosingBuild.getAABBEntrance().overlaps(build.getAABB()) || UV.choosingBuild.getAABB().overlaps(build.getAABBEntrance()) || UV.choosingBuild.getAABBEntrance().overlaps(build.getAABBEntrance())) {
+                            doBuild = false;
+                            break;
+                        }
+                    }
                 }
+            }
+        }
+        
+        if (UV.choosingTile != null) {
+            if (isInBoundaries(coords.getX(), coords.getY())) {            
+                doTile = true;
+                UV.choosingTile.setPosition(tiles[index].getPosition());    
+            }
+        }
+        
+        if (UV.choosingPeasant != null) {
+            if (isInBoundaries(coords.getX(), coords.getY())) {            
+                doPeasant = true;
+                UV.choosingPeasant.setPosition(tiles[index].getPosition());    
+                UV.choosingPeasant.setNamePosition((int) tiles[index].getPosition().x, (int) tiles[index].getPosition().y);    
             }
         }
     }
     
     public void mouseDragged(int oldX, int oldY, int newX, int newY) {
-        Int2 coords = getGridCoords(newX, newY);
-        doBuild = false;
+        doTile = false;
         
-        if (UV.choosingBuild != null) {
-            if (isInBoundaries(coords.getX(), coords.getY())) {
-                UV.choosingBuild.setPosition(tiles[coords.getX() * UV.gridWidth + coords.getY()].getPosition());
-                UV.choosingBuild.setGridPosition(coords);
+        Int2 coords = getGridCoords(newX, newY);
+        
+        if (UV.choosingTile != null) {
+            if (isInBoundaries(coords.getX(), coords.getY())) {                
+                doTile = true;
+                UV.tileDrawStopped.set(coords.getX(), coords.getY());
+                UV.choosingSquareTiles.clear();
                 
-                doBuild = true;
-                for(Build build : builds) {
-                    if (MyMath.boxIntersect(UV.choosingBuild.getGridPosition(), UV.choosingBuild.getTileSpace(), build.getGridPosition(), build.getTileSpace())) {
-                        doBuild = false;
-                        break;
+                int xMin = (UV.tileDrawStarted.getX() - UV.tileDrawStopped.getX() > 0) ? UV.tileDrawStopped.getX() : UV.tileDrawStarted.getX();
+                int xMax = (UV.tileDrawStarted.getX() - UV.tileDrawStopped.getX() > 0) ? UV.tileDrawStarted.getX() + 1 : UV.tileDrawStopped.getX() + 1;
+                int yMin = (UV.tileDrawStarted.getY() - UV.tileDrawStopped.getY() > 0) ? UV.tileDrawStopped.getY() : UV.tileDrawStarted.getY();
+                int yMax = (UV.tileDrawStarted.getY() - UV.tileDrawStopped.getY() > 0) ? UV.tileDrawStarted.getY() + 1 : UV.tileDrawStopped.getY() + 1;                
+                for (int x=xMin; x<xMax; x++) {
+                    for (int y=yMin; y<yMax; y++) {
+                        UV.choosingSquareTiles.add(UV.choosingTile.cloneTile(tiles[x * UV.gridWidth + y].getPosition()));
                     }
                 }
             }
         }
     }
     
-    public void mouseReleased(int button, int x, int y) {
+    public void mouseLeftReleased(int button, int x, int y) {  
         doBuild = false;
+        doTile = false;
+        doPeasant = false;
         
         if (UV.choosingBuild != null) {
             if (isInBoundaries(UV.mapX, UV.mapY)) {
+                UV.choosingBuild.setGridPositionProperly(UV.mapX, UV.mapY);
+                
                 doBuild = true;
                 for(Build build : builds) {
-                    if (MyMath.boxIntersect(UV.choosingBuild.getGridPosition(), UV.choosingBuild.getTileSpace(), build.getGridPosition(), build.getTileSpace())) {
+                    if (UV.choosingBuild.getAABB().overlaps(build.getAABB()) || UV.choosingBuild.getAABBEntrance().overlaps(build.getAABB()) || UV.choosingBuild.getAABB().overlaps(build.getAABBEntrance()) || UV.choosingBuild.getAABBEntrance().overlaps(build.getAABBEntrance())) {
                         doBuild = false;
                         break;
                     }
                 }
+            } else {
+                UV.choosingBuild = null;
+            }
+        }
+        
+        if (UV.choosingTile != null) {
+            if (isInBoundaries(UV.mapX, UV.mapY)) {
+                UV.choosingTile.setPosition(tiles[UV.mapX * UV.gridWidth + UV.mapY].getPosition());
+                doTile = true;
+            } else {
+                UV.choosingSquareTiles.clear();
+                UV.choosingTile = null;
+            }
+        }
+        
+        if (UV.choosingPeasant != null) {
+            if (isInBoundaries(UV.mapX, UV.mapY)) {
+                UV.choosingPeasant.setPosition(tiles[UV.mapX * UV.gridWidth + UV.mapY].getPosition());
+                doPeasant = true;
+            } else {
+                UV.choosingPeasant = null;
             }
         }
         
         if (doBuild) {
             builds.add(UV.choosingBuild);
+            renderList.add(UV.choosingBuild);
+            
+            sortRenderList = true;
+            
+            Collections.sort(builds, new Comparator<Build>() {
+                @Override
+                public int compare(Build b1, Build b2) {
+                    return (int) (b1.getPosition().y - b2.getPosition().y);
+                }
+            });
         }
-
-        Collections.sort(builds, new Comparator<Build>() {
+        
+        if (doTile) {
+            for (Tile tile : UV.choosingSquareTiles) {
+                Tile tmpTile = tile.cloneTile(tile.getPosition());
+                Int2 coords = getGridCoords((int) tmpTile.getPosition().x, (int) tmpTile.getPosition().y);
+                tiles[coords.getX() * UV.gridWidth + coords.getY()] = tmpTile;
+            }
+            
+            sortedTiles = Arrays.copyOf(tiles, tiles.length);
+            Arrays.sort(sortedTiles, new Comparator<Tile>() {
+                @Override
+                public int compare(Tile t1, Tile t2) {
+                    return (int) (t1.getPosition().y - t2.getPosition().y);
+                }
+            });
+        
+            UV.choosingSquareTiles.clear();
+        }
+        
+        if (doPeasant) {
+            entities.add(UV.choosingPeasant);
+            renderList.add(UV.choosingPeasant);
+            
+            sortRenderList = true;
+            
+            Collections.sort(entities, new Comparator<Entity>() {
+                @Override
+                public int compare(Entity e1, Entity e2) {
+                    return (int) (e1.getPosition().y - e2.getPosition().y);
+                }
+            });
+        }
+            
+        Collections.sort(renderList, new Comparator<Object>() {
             @Override
-            public int compare(Build b1, Build b2) {
-                return (int) (b1.getPosition().y - b2.getPosition().y);
+            public int compare(Object o1, Object o2) {
+                if (o1 instanceof Build && o2 instanceof Build) {
+                    return (int) (((Build)o1).getPosition().y - ((Build)o2).getPosition().y);
+                } else if (o1 instanceof Build && o2 instanceof Entity) {
+                    return (int) (((Build)o1).getPosition().y - ((Entity)o2).getPosition().y);
+                } else if (o1 instanceof Entity && o2 instanceof Build) {
+                    return (int) (((Entity)o1).getPosition().y - ((Build)o2).getPosition().y);
+                } else {
+                    return (int) (((Entity)o1).getPosition().y - ((Entity)o2).getPosition().y);
+                }
             }
         });
-        
-        GUI.falseAllVariables();
-        GUI.leftMenuNeedsUpdate = true;
-        
+            
         UV.choosingBuild = null;
+        UV.choosingTile = null;
+        UV.choosingPeasant = null;
+        
+        doBuild = false;
+        doTile = false;
+        doPeasant = false;
+        
+        GUI.falseContructionVariables();
+        GUI.falseTileVariables();
+        GUI.falsePeasantVariables();
+        GUI.leftMenuNeedsUpdate = true;
+    }
+    
+    public void mouseRightReleased(int button, int x, int y) {
+        if (UV.choosingBuild != null) {
+            if (UV.choosingBuild.getImageToDrawCounter() == 3) {
+                UV.choosingBuild.setImageToDrawCounter(0);
+            } else {
+                UV.choosingBuild.setImageToDrawCounter(UV.choosingBuild.getImageToDrawCounter() + 1);
+            }
+        }
     }
     
     

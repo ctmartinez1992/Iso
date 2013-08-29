@@ -1,11 +1,15 @@
 package Util.GUI.Menu;
 
+import Util.GUI.Button.Construction.*;
+import Util.GUI.Button.Tile.*;
 import Util.AABB;
 import Util.GUI.Button.*;
+import Util.GUI.Button.Peasant.*;
 import Util.GUI.GUI;
 import Util.Loader.ImageLoader;
 import Util.Math.Float2;
 import Util.UV;
+import java.util.ArrayList;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
@@ -15,10 +19,15 @@ import org.newdawn.slick.Graphics;
  */
 public class LeftMenu extends Menu {
     
-    private String time;
+    private ArrayList<Button> constructionButtons;
+    private ArrayList<Button> tileButtons;
+    private ArrayList<Button> peasantButtons;
     
     public LeftMenu() {
         super();
+        constructionButtons = new ArrayList();
+        tileButtons = new ArrayList();
+        peasantButtons = new ArrayList();
     }
 
     @Override
@@ -26,10 +35,33 @@ public class LeftMenu extends Menu {
         this.background = ImageLoader.loadImage("res/ui/menu/left_menu_1024_768.png");
         this.aabb = new AABB(new Float2(1, (container.getHeight() - this.background.getHeight())), new Float2(this.background.getWidth(), this.background.getHeight()));
         
-        this.buttons.add(new MarshallsLoftButton());
-        this.buttons.add(new CubeButton());
+        this.buttons.add(new ConstructionButton());
+        this.buttons.add(new TileButton());
+        this.buttons.add(new PeasantButton());
+        
+        this.constructionButtons.add(new House1Button());
+        this.constructionButtons.add(new CubeButton());
+        this.constructionButtons.add(new StorageButton());
+        
+        this.tileButtons.add(new GrassButton());
+        this.tileButtons.add(new DirtButton());
+        this.tileButtons.add(new RoadButton());
+        
+        this.peasantButtons.add(new SerfButton());
         
         for (Button button : buttons) {
+            button.init(container, this.background);
+        }
+        
+        for (Button button : constructionButtons) {
+            button.init(container, this.background);
+        }
+        
+        for (Button button : tileButtons) {
+            button.init(container, this.background);
+        }
+        
+        for (Button button : peasantButtons) {
             button.init(container, this.background);
         }
     }
@@ -41,11 +73,49 @@ public class LeftMenu extends Menu {
             for (Button button : buttons) {
                 button.update(container, delta);
             }
+            
+            if (GUI.showConstructionLeftMenu) {
+                for (Button button : constructionButtons) {
+                    button.update(container, delta);
+                }
+            }
+            
+            if (GUI.showTileLeftMenu) {
+                for (Button button : tileButtons) {
+                    button.update(container, delta);
+                }
+            }
+            
+            if (GUI.showPeasantLeftMenu) {
+                for (Button button : peasantButtons) {
+                    button.update(container, delta);
+                }
+            }
+            
         } else if (aabb.contains(UV.mouseX, UV.mouseY)) {
             UV.mouseOnMenu = true;
             for (Button button : buttons) {
                 button.update(container, delta);
             }
+            
+            if (GUI.showConstructionLeftMenu) {
+                for (Button button : constructionButtons) {
+                    button.update(container, delta);
+                }
+            }
+            
+            if (GUI.showTileLeftMenu) {
+                for (Button button : tileButtons) {
+                    button.update(container, delta);
+                }
+            }
+            
+            if (GUI.showPeasantLeftMenu) {
+                for (Button button : peasantButtons) {
+                    button.update(container, delta);
+                }
+            }
+            
         } else {
             UV.mouseOnMenu = false;
         }
@@ -58,6 +128,24 @@ public class LeftMenu extends Menu {
         for (Button button : buttons) {
             button.render(graphics, container);
         }
+        
+        if (GUI.showConstructionLeftMenu) {
+            for (Button button : constructionButtons) {
+                button.render(graphics, container);
+            }
+        }
+        
+        if (GUI.showTileLeftMenu) {
+            for (Button button : tileButtons) {
+                button.render(graphics, container);
+            }
+        }
+        
+        if (GUI.showPeasantLeftMenu) {
+            for (Button button : peasantButtons) {
+                button.render(graphics, container);
+            }
+        }
     }
     
     @Override
@@ -65,12 +153,48 @@ public class LeftMenu extends Menu {
         for (Button button : buttons) {
             button.mousePressed(buttonPressed, x, y);
         }
+        
+        if (GUI.showConstructionLeftMenu) {
+            for (Button button : constructionButtons) {
+                button.mousePressed(buttonPressed, x, y);
+            }
+        }
+        
+        if (GUI.showTileLeftMenu) {
+            for (Button button : tileButtons) {
+                button.mousePressed(buttonPressed, x, y);
+            }
+        }
+        
+        if (GUI.showPeasantLeftMenu) {
+            for (Button button : peasantButtons) {
+                button.mousePressed(buttonPressed, x, y);
+            }
+        }
     }
     
     @Override
     public void mouseReleased(int buttonPressed, int x, int y) {
         for (Button button : buttons) {
             button.mouseReleased(buttonPressed, x, y);
+        }
+        
+        if (GUI.showConstructionLeftMenu) {
+            for (Button button : constructionButtons) {
+                button.mouseReleased(buttonPressed, x, y);
+            }
+        }
+        
+        if (GUI.showTileLeftMenu) {
+            for (Button button : tileButtons) {
+                button.mouseReleased(buttonPressed, x, y);
+            }
+        }
+        
+        if (GUI.showPeasantLeftMenu) {
+            for (Button button : peasantButtons) {
+                button.mouseReleased(buttonPressed, x, y);
+            }
         }
     }
 }

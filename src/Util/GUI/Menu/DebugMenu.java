@@ -23,7 +23,7 @@ public class DebugMenu extends Menu {
 
     @Override
     public void init(GameContainer container) {
-        this.background = ImageLoader.loadImage("res/ui/menu/debug_1024_768.png");
+        this.background = ImageLoader.loadImage("res/ui/menu/debug_menu_1024_768.png");
         this.aabb = new AABB(new Float2(1, 1), new Float2(this.background.getWidth(), this.background.getHeight()));
     }
 

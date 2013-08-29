@@ -1,17 +1,65 @@
 package Util.Math;
 
-import Util.SmartRandom;
-
 /**
  *
  * @author carlos
  */
 public class MyMath {
     
-    private static SmartRandom random = new SmartRandom();
+    /**
+     * Checks for a minimum and a maximum and maintains the given value in 
+     * those parameters.
+     *
+     * @param value the value to compare.
+     * @param min the minimum value acceptable.
+     * @param max the maximum value acceptable.
+     * @return a value between the minimum and the maximum.
+     */
+    public static int interval(int value, int min, int max) {
+        if (value < min) {
+            return min;
+        } else if (value > max) {
+            return max;
+        } else {
+            return value;
+        }
+    }
     
-    public static boolean boxIntersect(Int2 box1, Int2 box1Measures, Int2 box2, Int2 box2Measures) {
-        return (Math.abs(box1.getX() - box2.getX()) * 2 < (box1Measures.getX() + box2Measures.getX())) 
-            && (Math.abs(box1.getY() - box2.getY()) * 2 < (box1Measures.getY() + box2Measures.getY()));
+    /**
+     * Checks for a minimum and a maximum and maintains the given value in 
+     * those parameters.
+     *
+     * @param value the value to compare.
+     * @param min the minimum value acceptable.
+     * @param max the maximum value acceptable.
+     * @return a value between the minimum and the maximum.
+     */
+    public static float interval(float value, float min, float max) {
+        if (value < min) {
+            return min;
+        } else if (value > max) {
+            return max;
+        } else {
+            return value;
+        }
+    }
+    
+    /**
+     * Checks for a minimum and a maximum and maintains the given value in 
+     * those parameters.
+     *
+     * @param value the value to compare.
+     * @param min the minimum value acceptable.
+     * @param max the maximum value acceptable.
+     * @return a value between the minimum and the maximum.
+     */
+    public static double interval(double value, double min, double max) {
+        if (value < min) {
+            return min;
+        } else if (value > max) {
+            return max;
+        } else {
+            return value;
+        }
     }
 }

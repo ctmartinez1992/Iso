@@ -25,9 +25,13 @@ public class Tile {
     }
 
     public void render(GameContainer container, Graphics graphics) {
-        if (getImage() != null && visible) {
-            graphics.drawImage(getImage(), getPosition().x, getPosition().y - ((image.getHeight() - 1) / 2));
-        }
+    }
+
+    public void renderTranslucent(GameContainer container, Graphics graphics, boolean doTile) {
+    }
+    
+    public Tile cloneTile(Vector2f position) {
+        return null;
     }
 
     public void setPosition(Vector2f position) {

@@ -1,7 +1,9 @@
 package Main;
 
 import Map.Map;
+import Sound.SoundManager;
 import Util.GUI.GUI;
+import Util.Loader.FontLoader;
 import Util.Math.Int2;
 import Util.Options;
 import Util.UV;
@@ -37,6 +39,9 @@ public class IsoGame extends BasicGame {
     @Override
     public void init(GameContainer container) throws SlickException {
         container.setShowFPS(false);
+        
+        FontLoader.init();
+        SoundManager.init();
         
         this.map.init(container);
         this.gui.init(container);
@@ -75,10 +80,19 @@ public class IsoGame extends BasicGame {
     public void mousePressed(int button, int x, int y) {
         if (button == Input.MOUSE_LEFT_BUTTON) {
             mouseLeft = true;
+            mouseRight = false;
             if (!UV.mouseOnMenu) {
-                map.mousePressed(button, x, y);
+                map.mouseLeftPressed(button, x, y);
             } else {
                 gui.mousePressed(button, x, y);
+            }
+        }
+        
+        if (button == Input.MOUSE_RIGHT_BUTTON) {
+            mouseRight = true;
+            mouseLeft = false;
+            if (!UV.mouseOnMenu) {
+                map.mouseRightPressed(button, x, y);
             }
         }
     }
@@ -97,17 +111,89 @@ public class IsoGame extends BasicGame {
     public void mouseReleased(int button, int x, int y) {
         if (button == Input.MOUSE_LEFT_BUTTON) {
             if (!UV.mouseOnMenu) {
-                map.mouseReleased(button, x, y);
+                map.mouseLeftReleased(button, x, y);
             } else {
                 gui.mouseReleased(button, x, y);
             }
             
             mouseLeft = false;
         }
+        
+        if (button == Input.MOUSE_RIGHT_BUTTON) {
+            if (!UV.mouseOnMenu) {
+                map.mouseRightReleased(button, x, y);
+            }
+            
+            mouseRight = false;
+        }
+    }
+    
+    @Override
+    public void keyPressed(int key, char character) {
+        
+    }
+
+    @Override
+    public void keyReleased(int key, char character) {
+        if (key == Input.KEY_P) {
+            SoundManager.pauseMusic(SoundManager.ruins);
+        }
+        if (key == Input.KEY_R) {
+            SoundManager.resumeMusic(SoundManager.ruins);
+        }
+        if (key == Input.KEY_UP) {
+            SoundManager.increaseMusicVolume(SoundManager.ruins);
+        }
+        if (key == Input.KEY_DOWN) {
+            SoundManager.decreaseMusicVolume(SoundManager.ruins);
+        }
+        
+        if (key == Input.KEY_A) {
+            SoundManager.playSound(SoundManager.clav);
+        }
+        if (key == Input.KEY_S) {
+            SoundManager.playSound(SoundManager.guiro);
+        }
+        if (key == Input.KEY_D) {
+            SoundManager.playSound(SoundManager.hat);
+        }
+        if (key == Input.KEY_F) {
+            SoundManager.playSound(SoundManager.kick);
+        }
+        if (key == Input.KEY_G) {
+            SoundManager.playSound(SoundManager.shake);
+        }
+        if (key == Input.KEY_H) {
+            SoundManager.playSound(SoundManager.toc);
+        }
+        if (key == Input.KEY_Z) {
+            SoundManager.playSound(SoundManager.tom1);
+        }
+        if (key == Input.KEY_X) {
+            SoundManager.playSound(SoundManager.tom2);
+        }
+        if (key == Input.KEY_C) {
+            SoundManager.playSound(SoundManager.tom3);
+        }
+        if (key == Input.KEY_V) {
+            SoundManager.playSound(SoundManager.tom4);
+        }
+        if (key == Input.KEY_B) {
+            SoundManager.playSound(SoundManager.triangle);
+        }
+        
+        if (key == Input.KEY_Q) {
+            SoundManager.playSound(SoundManager.tom4, 0.5f, 1.0);
+        }
+        if (key == Input.KEY_W) {
+            SoundManager.playSound(SoundManager.tom4, 0.5f, -1.0);
+        }
     }
 
     @Override
     public boolean closeRequested() {
+        SoundManager.shutdown();
+        
         return true;
     }
 

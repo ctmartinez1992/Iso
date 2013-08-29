@@ -33,6 +33,15 @@ public class Int2 {
         this.y = y;
         this.flag = flag;
     }
+    
+    public Int2 copy() {
+        return new Int2(x, y, flag);
+    }
+    
+    public void add(int x, int y) {
+        this.x += x;
+        this.y += y;
+    }
 
     public boolean compare(Int2 other) {
         return (x == other.x && y == other.y);

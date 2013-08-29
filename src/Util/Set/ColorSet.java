@@ -1,6 +1,5 @@
 package Util.Set;
 
-import Util.Set.*;
 import Util.SmartRandom;
 import java.util.ArrayList;
 import java.util.List;

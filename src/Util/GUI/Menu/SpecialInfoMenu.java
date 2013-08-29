@@ -22,7 +22,7 @@ public class SpecialInfoMenu extends Menu {
 
     @Override
     public void init(GameContainer container) {
-        this.background = ImageLoader.loadImage("res/ui/menu/special_info_1024_768.png");
+        this.background = ImageLoader.loadImage("res/ui/menu/special_info_menu_1024_768.png");
         this.aabb = new AABB(new Float2((container.getWidth() - this.background.getWidth() - 1), 1), new Float2(this.background.getWidth(), this.background.getHeight()));
     }
 

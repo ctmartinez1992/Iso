@@ -12,22 +12,95 @@ import org.newdawn.slick.Graphics;
 public class GUI {
     
     //Menus modifiers.
+        public static boolean showConstructionLeftMenu = false;
+        public static boolean showTileLeftMenu = false;
+        public static boolean showPeasantLeftMenu = false;
+    
         public static boolean leftMenuNeedsUpdate = false;
-    
-    //Buttons modifiers.
-        public static void falseAllVariables() {
-            buttonBeingClickedMarshallsLoft = false;
-            buttonChoosedMarshallsLoft = false;
-            buttonBeingClickedCube = false;
-            buttonChoosedCube = false;}
-    
-        //Marshall's Loft.
-            public static boolean buttonBeingClickedMarshallsLoft = false;
-            public static boolean buttonChoosedMarshallsLoft = false;
         
-        //Cube.
-            public static boolean buttonBeingClickedCube = false;
-            public static boolean buttonChoosedCube = false;
+    //False Methods.
+        public static void falseShowVariables() {
+            showConstructionLeftMenu = false;
+            showTileLeftMenu = false;
+            showPeasantLeftMenu = false;
+        }
+        
+        public static void falseMainVariables() {
+            buttonBeingClickedBuilding = false;
+            buttonChoosedBuilding = false;
+            buttonBeingClickedTile = false;
+            buttonChoosedTile = false;
+            buttonBeingClickedPeasant = false;
+            buttonChoosedPeasant = false;
+        }
+        
+        public static void falseContructionVariables() {
+            buttonBeingClickedHouse1 = false;
+            buttonChoosedHouse1 = false;
+            buttonBeingClickedCube = false;
+            buttonChoosedCube = false;
+            buttonBeingClickedStorage = false;
+            buttonChoosedStorage = false;
+        }
+        
+        public static void falseTileVariables() {
+            buttonBeingClickedGrassTile = false;
+            buttonChoosedGrassTile = false;
+            buttonBeingClickedDirtTile = false;
+            buttonChoosedDirtTile = false;
+            buttonBeingClickedRoadTile = false;
+            buttonChoosedRoadTile = false;
+        }
+        
+        public static void falsePeasantVariables() {
+            buttonBeingClickedSerf = false;
+            buttonChoosedSerf = false;
+        }
+        
+    //Buttons modifiers.  
+        //Icons.
+            //Building Icon.
+                public static boolean buttonBeingClickedBuilding = false;
+                public static boolean buttonChoosedBuilding = false;
+
+            //Tile Icon.
+                public static boolean buttonBeingClickedTile = false;
+                public static boolean buttonChoosedTile = false;
+
+            //Peasant Icon.
+                public static boolean buttonBeingClickedPeasant = false;
+                public static boolean buttonChoosedPeasant = false;
+    
+        //Builds. 
+            //House1 Build.
+                public static boolean buttonBeingClickedHouse1 = false;
+                public static boolean buttonChoosedHouse1 = false;
+
+            //Cube Build.
+                public static boolean buttonBeingClickedCube = false;
+                public static boolean buttonChoosedCube = false;
+
+            //Storage Build.
+                public static boolean buttonBeingClickedStorage = false;
+                public static boolean buttonChoosedStorage = false;
+    
+        //Tiles.
+            //Grass Tile.
+                public static boolean buttonBeingClickedGrassTile = false;
+                public static boolean buttonChoosedGrassTile = false;
+
+            //Dirt Tile.
+                public static boolean buttonBeingClickedDirtTile = false;
+                public static boolean buttonChoosedDirtTile = false;
+
+            //Road Tile.
+                public static boolean buttonBeingClickedRoadTile = false;
+                public static boolean buttonChoosedRoadTile = false;
+    
+        //Peasants. 
+            //Serf Dude.
+                public static boolean buttonBeingClickedSerf = false;
+                public static boolean buttonChoosedSerf = false;
     
     
     private ArrayList<Menu> menus;
