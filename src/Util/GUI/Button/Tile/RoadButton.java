@@ -30,8 +30,8 @@ public class RoadButton extends Button {
         this.backgroundCurrent = this.background;
         this.content = ImageLoader.loadImage("res/tiles/road.png");
         
-        this.position = new AABB(new Float2(108, (container.getHeight() - menu.getHeight() + 68)), new Float2(this.background.getWidth(), this.background.getHeight()));
-        this.contentPosition = new Int2(110, (container.getHeight() - menu.getHeight()) + 80);
+        this.position = new AABB(new Float2(110, (container.getHeight() - menu.getHeight() + 88)), new Float2(this.background.getWidth(), this.background.getHeight()));
+        this.contentPosition = new Int2(112, (container.getHeight() - menu.getHeight()) + 100);
     }
 
     @Override
@@ -67,6 +67,8 @@ public class RoadButton extends Button {
         GUI.buttonBeingClickedRoadTile = false;
         if (position.contains(UV.mouseX, UV.mouseY)) {
             GUI.falseTileVariables();
+            GUI.falseShowBuildMenuVariables();
+            
             GUI.buttonChoosedRoadTile = true;
             
             UV.choosingTile = new NormalRoadTile();

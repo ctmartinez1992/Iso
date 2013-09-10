@@ -11,6 +11,13 @@ import org.newdawn.slick.Graphics;
  */
 public class GUI {
     
+    /*
+     * 
+     * buttonBeingClicked...        controls when a mouse is over a certain button and is being clicked/pressed...
+     * buttonChoosed...             controls if a button was clicked and should stay clicked until the user clicks on something else...
+     * 
+     */
+    
     //Menus modifiers.
         public static boolean showConstructionLeftMenu = false;
         public static boolean showTileLeftMenu = false;
@@ -28,17 +35,21 @@ public class GUI {
         public static void falseMainVariables() {
             buttonBeingClickedBuilding = false;
             buttonChoosedBuilding = false;
+            
             buttonBeingClickedTile = false;
             buttonChoosedTile = false;
+            
             buttonBeingClickedPeasant = false;
             buttonChoosedPeasant = false;
         }
         
         public static void falseContructionVariables() {
-            buttonBeingClickedHouse1 = false;
-            buttonChoosedHouse1 = false;
+            buttonBeingClickedBakery = false;
+            buttonChoosedBakery = false;
+            
             buttonBeingClickedCube = false;
             buttonChoosedCube = false;
+            
             buttonBeingClickedStorage = false;
             buttonChoosedStorage = false;
         }
@@ -46,8 +57,10 @@ public class GUI {
         public static void falseTileVariables() {
             buttonBeingClickedGrassTile = false;
             buttonChoosedGrassTile = false;
+            
             buttonBeingClickedDirtTile = false;
             buttonChoosedDirtTile = false;
+            
             buttonBeingClickedRoadTile = false;
             buttonChoosedRoadTile = false;
         }
@@ -55,6 +68,12 @@ public class GUI {
         public static void falsePeasantVariables() {
             buttonBeingClickedSerf = false;
             buttonChoosedSerf = false;
+            buttonBeingClickedBuilder = false;
+            buttonChoosedBuilder = false;
+        }
+        
+        public static void falseShowBuildMenuVariables() {
+            buttonShowMenuBakery = false;
         }
         
     //Buttons modifiers.  
@@ -72,9 +91,10 @@ public class GUI {
                 public static boolean buttonChoosedPeasant = false;
     
         //Builds. 
-            //House1 Build.
-                public static boolean buttonBeingClickedHouse1 = false;
-                public static boolean buttonChoosedHouse1 = false;
+            //Bakery Build.
+                public static boolean buttonBeingClickedBakery = false;
+                public static boolean buttonChoosedBakery = false;
+                public static boolean buttonShowMenuBakery = false;
 
             //Cube Build.
                 public static boolean buttonBeingClickedCube = false;
@@ -101,6 +121,10 @@ public class GUI {
             //Serf Dude.
                 public static boolean buttonBeingClickedSerf = false;
                 public static boolean buttonChoosedSerf = false;
+                
+            //Builder Dude.
+                public static boolean buttonBeingClickedBuilder = false;
+                public static boolean buttonChoosedBuilder = false;
     
     
     private ArrayList<Menu> menus;

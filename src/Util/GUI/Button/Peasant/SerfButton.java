@@ -30,8 +30,8 @@ public class SerfButton extends Button {
         this.backgroundCurrent = this.background;
         this.content = ImageLoader.loadImage("res/people/serf/serf.png");
         
-        this.position = new AABB(new Float2(4, (container.getHeight() - menu.getHeight() + 68)), new Float2(this.background.getWidth(), this.background.getHeight()));
-        this.contentPosition = new Int2(22, (container.getHeight() - menu.getHeight()) + 74);
+        this.position = new AABB(new Float2(6, (container.getHeight() - menu.getHeight() + 88)), new Float2(this.background.getWidth(), this.background.getHeight()));
+        this.contentPosition = new Int2(24, (container.getHeight() - menu.getHeight()) + 94);
     }
 
     @Override
@@ -69,6 +69,8 @@ public class SerfButton extends Button {
             GUI.falseContructionVariables();
             GUI.falseTileVariables();
             GUI.falsePeasantVariables();
+            GUI.falseShowBuildMenuVariables();
+            
             GUI.buttonChoosedSerf = true;
             
             UV.choosingPeasant = new Serf();

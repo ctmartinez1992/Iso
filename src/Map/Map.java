@@ -6,6 +6,7 @@ import Util.Math.Int2;
 import Tile.GroundTiles.*;
 import Tile.Tile;
 import Util.GUI.GUI;
+import Util.Math.MyMath;
 import Util.UV;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,8 +32,7 @@ public class Map {
     private ArrayList<Entity> entities;
     
     private ArrayList<Object> renderList;
-
-    private Vector2f origin;
+    
     private Vector2f right;
     private Vector2f down;
     
@@ -73,13 +73,13 @@ public class Map {
         square.addPoint(UV.tileWidth, 0);
         square.addPoint(halfTileWidth, -halfTileHeight);
 
-        origin = new Vector2f(0, container.getHeight() / 2);
+        UV.origin = new Vector2f(0, container.getHeight() / 2);
         right = new Vector2f(halfTileWidth, halfTileHeight);
         down = new Vector2f(halfTileWidth, -halfTileHeight);
 
         for (int y=0; y<UV.gridHeight; y++) {
             for (int x=0; x<UV.gridWidth; x++) {
-                Vector2f position = origin.copy().add(right.copy().scale(x)).add(down.copy().scale(y));
+                Vector2f position = UV.origin.copy().add(right.copy().scale(x)).add(down.copy().scale(y));
                 tiles[y * UV.gridHeight + x] = new NormalGrassTile();
                 tiles[y * UV.gridHeight + x].init(position);
             }
@@ -96,19 +96,25 @@ public class Map {
 
     public void update(GameContainer container, int delta) {
         if (UV.initChoosedBuild) {
-            UV.initChoosedBuild = false;
-            UV.choosingBuild.init(tiles[UV.mapX * UV.gridWidth + UV.mapY].getPosition(), new Int2(UV.mapX, UV.mapY));
-            UV.choosingBuild.setGridPositionProperly(UV.mapX, UV.mapY);
+            if (MyMath.interval(UV.mapX * UV.gridWidth + UV.mapY, 0, UV.gridWidth * UV.gridHeight)) {
+                UV.initChoosedBuild = false;
+                UV.choosingBuild.init(tiles[UV.mapX * UV.gridWidth + UV.mapY].getPosition(), new Int2(UV.mapX, UV.mapY));
+                UV.choosingBuild.setGridPositionProperly(UV.mapX, UV.mapY);
+            }
         }
         
         if (UV.initChoosedTile) {
-            UV.initChoosedTile = false;
-            UV.choosingTile.init(tiles[UV.mapX * UV.gridWidth + UV.mapY].getPosition());
+            if (MyMath.interval(UV.mapX * UV.gridWidth + UV.mapY, 0, UV.gridWidth * UV.gridHeight)) {
+                UV.initChoosedTile = false;
+                UV.choosingTile.init(tiles[UV.mapX * UV.gridWidth + UV.mapY].getPosition());
+            }
         }
         
         if (UV.initChoosedPeasant) {
-            UV.initChoosedPeasant = false;
-            UV.choosingPeasant.init((int) tiles[UV.mapX * UV.gridWidth + UV.mapY].getPosition().x, (int) tiles[UV.mapX * UV.gridWidth + UV.mapY].getPosition().y);
+            if (MyMath.interval(UV.mapX * UV.gridWidth + UV.mapY, 0, UV.gridWidth * UV.gridHeight)) {
+                UV.initChoosedPeasant = false;
+                UV.choosingPeasant.init((int) tiles[UV.mapX * UV.gridWidth + UV.mapY].getPosition().x, (int) tiles[UV.mapX * UV.gridWidth + UV.mapY].getPosition().y, UV.mapX, UV.mapY);
+            }
         }
         
         for (Tile tile : sortedTiles) {
@@ -121,7 +127,11 @@ public class Map {
         }
         
         for (Entity entity : entities) {
-            entity.update(container);
+            entity.update(container, builds);
+        }
+        
+        for (Build build : builds) {
+            build.update(container, delta);
         }
     }
 
@@ -165,6 +175,12 @@ public class Map {
         }
     }
     
+    public void renderAfterGUI(GameContainer container, Graphics graphics) {
+        for (Build build : builds) {
+            build.renderAfterGUI(container, graphics);
+        }
+    }
+    
 
     /*
      * 
@@ -203,6 +219,10 @@ public class Map {
                 doPeasant = true;
             }
         }
+        
+        for (Build build : builds) {
+            build.mousePressed(button, x, y);
+        }
     }
     
     public void mouseRightPressed(int button, int x, int y) {
@@ -223,7 +243,7 @@ public class Map {
                 
                 doBuild = true;
                 for(Build build : builds) {
-                    if (UV.choosingBuild.getAABB() != null || UV.choosingBuild.getAABBEntrance()!= null || build.getAABB() != null || build.getAABBEntrance() != null) {
+                    if (UV.choosingBuild.getAABB() != null && UV.choosingBuild.getAABBEntrance()!= null && build.getAABB() != null && build.getAABBEntrance() != null) {
                         if (UV.choosingBuild.getAABB().overlaps(build.getAABB()) || UV.choosingBuild.getAABBEntrance().overlaps(build.getAABB()) || UV.choosingBuild.getAABB().overlaps(build.getAABBEntrance()) || UV.choosingBuild.getAABBEntrance().overlaps(build.getAABBEntrance())) {
                             doBuild = false;
                             break;
@@ -243,8 +263,8 @@ public class Map {
         if (UV.choosingPeasant != null) {
             if (isInBoundaries(coords.getX(), coords.getY())) {            
                 doPeasant = true;
-                UV.choosingPeasant.setPosition(tiles[index].getPosition());    
-                UV.choosingPeasant.setNamePosition((int) tiles[index].getPosition().x, (int) tiles[index].getPosition().y);    
+                UV.choosingPeasant.setPosition(tiles[index].getPosition().x, tiles[index].getPosition().y);    
+                UV.choosingPeasant.setGridPosition(UV.mapX, UV.mapY);
             }
         }
     }
@@ -278,6 +298,11 @@ public class Map {
         doTile = false;
         doPeasant = false;
         
+        UV.selectedBuild = null;
+        for (Build build : builds) {
+            build.mouseReleased(button, x, y);
+        }
+        
         if (UV.choosingBuild != null) {
             if (isInBoundaries(UV.mapX, UV.mapY)) {
                 UV.choosingBuild.setGridPositionProperly(UV.mapX, UV.mapY);
@@ -306,7 +331,8 @@ public class Map {
         
         if (UV.choosingPeasant != null) {
             if (isInBoundaries(UV.mapX, UV.mapY)) {
-                UV.choosingPeasant.setPosition(tiles[UV.mapX * UV.gridWidth + UV.mapY].getPosition());
+                UV.choosingPeasant.setPosition(tiles[UV.mapX * UV.gridWidth + UV.mapY].getPosition().x, tiles[UV.mapX * UV.gridWidth + UV.mapY].getPosition().y);
+                UV.choosingPeasant.setGridPosition(UV.mapX, UV.mapY);
                 doPeasant = true;
             } else {
                 UV.choosingPeasant = null;
@@ -325,6 +351,8 @@ public class Map {
                     return (int) (b1.getPosition().y - b2.getPosition().y);
                 }
             });
+            
+            GUI.buttonShowMenuBakery = false;
         }
         
         if (doTile) {
@@ -408,9 +436,9 @@ public class Map {
     
     public Int2 getGridCoords(int x, int y) {
         Int2 out = new Int2();
-
-        out.setX((int) (((x - origin.x) - 2 * (y - origin.y)) / UV.tileWidth));
-        out.setY((int) (((x - origin.x) + 2 * (y - origin.y)) / UV.tileWidth));
+        
+        out.setX((int) (((x - UV.origin.x) - 2 * (y - UV.origin.y)) / UV.tileWidth));
+        out.setY((int) (((x - UV.origin.x) + 2 * (y - UV.origin.y)) / UV.tileWidth));
 
         return out;
     }

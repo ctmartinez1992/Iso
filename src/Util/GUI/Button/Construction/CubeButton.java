@@ -30,8 +30,8 @@ public class CubeButton extends Button {
         this.backgroundCurrent = this.background;
         this.content = ImageLoader.loadImage("res/build/cube/cube_BR.png");
         
-        this.position = new AABB(new Float2(56, (container.getHeight() - menu.getHeight() + 68)), new Float2(this.background.getWidth(), this.background.getHeight()));
-        this.contentPosition = new Int2(58, (container.getHeight() - menu.getHeight()) + 69);
+        this.position = new AABB(new Float2(58, (container.getHeight() - menu.getHeight() + 88)), new Float2(this.background.getWidth(), this.background.getHeight()));
+        this.contentPosition = new Int2(60, (container.getHeight() - menu.getHeight()) + 89);
     }
 
     @Override
@@ -69,6 +69,7 @@ public class CubeButton extends Button {
             GUI.falseContructionVariables();
             GUI.falseTileVariables();
             GUI.falsePeasantVariables();
+            GUI.falseShowBuildMenuVariables();
             
             GUI.buttonChoosedCube = true;
             

@@ -1,8 +1,10 @@
 package Entity.WorkerEntity;
 
+import Build.Build;
 import Util.Loader.FontLoader;
 import Util.Loader.ImageLoader;
 import Util.Math.Int2;
+import java.util.ArrayList;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -18,19 +20,18 @@ public class Serf extends Worker {
     }
 
     @Override
-    public Serf init(int x, int y) {
+    public Serf init(int x, int y, int gridX, int gridY) {
         this.position = new Vector2f(x, y);
         this.image = ImageLoader.loadImage("res/people/serf/serf.png");
         
         this.name = "Serf";
-        this.setNamePosition(new Int2(x, y));
         this.showName = true;
         
         return this;
     }
 
     @Override
-    public void update(GameContainer container) {
+    public void update(GameContainer container, ArrayList<Build> builds) {
         //System.out.println("I exist at " + position.getX() + ", " + position.getY());
     }
 
@@ -39,8 +40,8 @@ public class Serf extends Worker {
         graphics.drawImage(this.image, this.position.getX() + 24, this.position.getY() - 48);
         if (this.showName) {
             graphics.setColor(new Color(255, 255, 255));
-            graphics.setFont(FontLoader.arialFont);
-            graphics.drawString(this.name, this.getNamePosition().getX() + 22, this.getNamePosition().getY() - 60);
+            graphics.setFont(FontLoader.arialFont10);
+            //graphics.drawString(this.name, this.getNamePosition().getX() + 22, this.getNamePosition().getY() - 60);
         }
     }
 

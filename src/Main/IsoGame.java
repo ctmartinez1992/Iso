@@ -7,6 +7,9 @@ import Util.Loader.FontLoader;
 import Util.Math.Int2;
 import Util.Options;
 import Util.UV;
+import Util.Vault.ColorVault;
+import Util.Vault.ImageVault;
+
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
@@ -15,6 +18,8 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 public class IsoGame extends BasicGame {
+    
+    public static AppGameContainer app;
     
     private Map map;
     private GUI gui;
@@ -28,6 +33,15 @@ public class IsoGame extends BasicGame {
     private boolean mouseLeft;
     private boolean mouseMiddle;
     private boolean mouseRight;
+    
+    private static IsoGame _instance;
+    
+    public static IsoGame getInstance() {
+        if (_instance == null) {
+            _instance = new IsoGame();
+        }
+        return _instance;
+    }
 
     public IsoGame() {
         super("Isometric Engine");
@@ -42,6 +56,8 @@ public class IsoGame extends BasicGame {
         
         FontLoader.init();
         SoundManager.init();
+        ImageVault.load();
+        ColorVault.load();
         
         this.map.init(container);
         this.gui.init(container);
@@ -57,16 +73,14 @@ public class IsoGame extends BasicGame {
         UV.mapY = coords.getY();
         
         gui.update(container, delta);
-        
-        if (!UV.mouseOnMenu) {
-            map.update(container, delta);
-        }
+        map.update(container, delta);
     }
 
     @Override
     public void render(GameContainer container, Graphics graphics) throws SlickException {
         map.render(container, graphics);
         gui.render(graphics, container);
+        map.renderAfterGUI(container, graphics);
     }
     
     @Override
@@ -138,7 +152,7 @@ public class IsoGame extends BasicGame {
         if (key == Input.KEY_P) {
             SoundManager.pauseMusic(SoundManager.ruins);
         }
-        if (key == Input.KEY_R) {
+        if (key == Input.KEY_O) {
             SoundManager.resumeMusic(SoundManager.ruins);
         }
         if (key == Input.KEY_UP) {
@@ -148,59 +162,105 @@ public class IsoGame extends BasicGame {
             SoundManager.decreaseMusicVolume(SoundManager.ruins);
         }
         
-        if (key == Input.KEY_A) {
-            SoundManager.playSound(SoundManager.clav);
-        }
-        if (key == Input.KEY_S) {
-            SoundManager.playSound(SoundManager.guiro);
-        }
-        if (key == Input.KEY_D) {
-            SoundManager.playSound(SoundManager.hat);
-        }
-        if (key == Input.KEY_F) {
-            SoundManager.playSound(SoundManager.kick);
-        }
-        if (key == Input.KEY_G) {
-            SoundManager.playSound(SoundManager.shake);
-        }
-        if (key == Input.KEY_H) {
-            SoundManager.playSound(SoundManager.toc);
-        }
-        if (key == Input.KEY_Z) {
-            SoundManager.playSound(SoundManager.tom1);
-        }
-        if (key == Input.KEY_X) {
-            SoundManager.playSound(SoundManager.tom2);
-        }
-        if (key == Input.KEY_C) {
-            SoundManager.playSound(SoundManager.tom3);
-        }
-        if (key == Input.KEY_V) {
-            SoundManager.playSound(SoundManager.tom4);
-        }
-        if (key == Input.KEY_B) {
-            SoundManager.playSound(SoundManager.triangle);
+//        if (key == Input.KEY_A) {
+//            SoundManager.playSound(SoundManager.clav);
+//        }
+//        if (key == Input.KEY_S) {
+//            SoundManager.playSound(SoundManager.guiro);
+//        }
+//        if (key == Input.KEY_D) {
+//            SoundManager.playSound(SoundManager.hat);
+//        }
+//        if (key == Input.KEY_F) {
+//            SoundManager.playSound(SoundManager.kick);
+//        }
+//        if (key == Input.KEY_G) {
+//            SoundManager.playSound(SoundManager.shake);
+//        }
+//        if (key == Input.KEY_H) {
+//            SoundManager.playSound(SoundManager.toc);
+//        }
+//        if (key == Input.KEY_Z) {
+//            SoundManager.playSound(SoundManager.tom1);
+//        }
+//        if (key == Input.KEY_X) {
+//            SoundManager.playSound(SoundManager.tom2);
+//        }
+//        if (key == Input.KEY_C) {
+//            SoundManager.playSound(SoundManager.tom3);
+//        }
+//        if (key == Input.KEY_V) {
+//            SoundManager.playSound(SoundManager.tom4);
+//        }
+//        if (key == Input.KEY_B) {
+//            SoundManager.playSound(SoundManager.triangle);
+//        }
+//        
+//        if (key == Input.KEY_Q) {
+//            SoundManager.playSound(SoundManager.tom4, 0.5f, 1.0);
+//        }
+//        if (key == Input.KEY_W) {
+//            SoundManager.playSound(SoundManager.tom4, 0.5f, -1.0);
+//        }
+        
+        if (key == Input.KEY_ESCAPE) {
+             closeRequested();
+             IsoGame.app.exit();
         }
         
-        if (key == Input.KEY_Q) {
-            SoundManager.playSound(SoundManager.tom4, 0.5f, 1.0);
-        }
-        if (key == Input.KEY_W) {
-            SoundManager.playSound(SoundManager.tom4, 0.5f, -1.0);
+        if (UV.selectedBuild != null) {
+            if (UV.selectedBuild.getSpecifications().isConstructionDone()) {
+                if (key == Input.KEY_Q) {
+                    UV.selectedBuild.getSpecifications().addNeed1Quantity();
+                }
+                if (key == Input.KEY_A) {
+                    UV.selectedBuild.getSpecifications().subNeed1Quantity();
+                }
+                if (key == Input.KEY_W) {
+                    UV.selectedBuild.getSpecifications().addNeed2Quantity();
+                }
+                if (key == Input.KEY_S) {
+                    UV.selectedBuild.getSpecifications().subNeed2Quantity();
+                }
+                if (key == Input.KEY_E) {
+                    UV.selectedBuild.getSpecifications().addProduce1Quantity();
+                }
+                if (key == Input.KEY_D) {
+                    UV.selectedBuild.getSpecifications().subProduce1Quantity();
+                }
+                if (key == Input.KEY_Y) {
+                    UV.selectedBuild.getSpecifications().addWorkerQuantity();
+                }
+                if (key == Input.KEY_H) {
+                    UV.selectedBuild.getSpecifications().subWorkerQuantity();
+                }
+            } else {
+                if (key == Input.KEY_R) {
+                    UV.selectedBuild.getSpecifications().addConstructionNeed1Quantity();
+                }
+                if (key == Input.KEY_F) {
+                    UV.selectedBuild.getSpecifications().subConstructionNeed1Quantity();
+                }
+                if (key == Input.KEY_T) {
+                    UV.selectedBuild.getSpecifications().addConstructionNeed2Quantity();
+                }
+                if (key == Input.KEY_G) {
+                    UV.selectedBuild.getSpecifications().subConstructionNeed2Quantity();
+                }
+            }
         }
     }
 
     @Override
     public boolean closeRequested() {
         SoundManager.shutdown();
-        
         return true;
     }
 
     public static void main(String[] args) throws Exception {
         Options.getInstance().readFile();
         
-        AppGameContainer app = new AppGameContainer(new IsoGame());
+        app = new AppGameContainer(IsoGame.getInstance());
 
         app.setDisplayMode(Options.getInstance().getWidth(), Options.getInstance().getHeight(), Options.getInstance().isFullscreen());
         app.setVSync(Options.getInstance().isVsync());

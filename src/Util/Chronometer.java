@@ -31,12 +31,12 @@ public final class Chronometer {
         return end - begin;
     }
  
-    public double getTimePassedSeconds() {
-        return getTimePassed() / 1000.0;
+    public int getTimePassedSeconds() {
+        return (int) (getTimePassed() / 1000.0);
     }
  
-    public double getTimeEndSeconds() {
-        return getTimeEnd() / 1000.0;
+    public int getTimeEndSeconds() {
+        return (int) (getTimeEnd() / 1000.0);
     }
  
     public double getMinutes() {

@@ -28,8 +28,8 @@ public class PeasantButton extends Button {
         this.backgroundCurrent = this.background;
         this.content = ImageLoader.loadImage("res/ui/icon/peasant_icon_1024_768.png");
         
-        this.position = new AABB(new Float2(108, (container.getHeight() - menu.getHeight() + 4)), new Float2(this.background.getWidth(), this.background.getHeight()));
-        this.contentPosition = new Int2(114, (container.getHeight() - menu.getHeight()) + 9);
+        this.position = new AABB(new Float2(110, (container.getHeight() - menu.getHeight() + 14)), new Float2(this.background.getWidth(), this.background.getHeight()));
+        this.contentPosition = new Int2(116, (container.getHeight() - menu.getHeight()) + 19);
     }
 
     @Override
@@ -67,6 +67,7 @@ public class PeasantButton extends Button {
             GUI.falseTileVariables();
             GUI.falsePeasantVariables();
             GUI.falseShowVariables();
+            GUI.falseShowBuildMenuVariables();
             
             GUI.buttonChoosedPeasant = true;
             GUI.showPeasantLeftMenu = true;

@@ -44,9 +44,9 @@ public class DebugMenu extends Menu {
         graphics.drawImage(this.background, this.aabb.getPosition().getX(), this.aabb.getPosition().getY());
         
         graphics.setColor(new Color(UV.highlightColor.getX(), UV.highlightColor.getY(), UV.highlightColor.getZ()));
-        graphics.drawString(String.format("FPS: %d", container.getFPS()), 5, 0);
-        graphics.drawString(String.format("Mouse X: %d Y: %d", UV.mouseX, UV.mouseY), 5, 15);
-        graphics.drawString(String.format("Grid X: %d Y: %d", UV.mapX, UV.mapY), 5, 30);
+        graphics.drawString(String.format("FPS: %d", container.getFPS()), 5, 15);
+        graphics.drawString(String.format("Mouse X: %d Y: %d", UV.mouseX, UV.mouseY), 5, 30);
+        graphics.drawString(String.format("Grid X: %d Y: %d", UV.mapX, UV.mapY), 5, 45);
     }
     
     @Override

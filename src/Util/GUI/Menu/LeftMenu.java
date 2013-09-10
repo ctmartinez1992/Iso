@@ -32,14 +32,20 @@ public class LeftMenu extends Menu {
 
     @Override
     public void init(GameContainer container) {
-        this.background = ImageLoader.loadImage("res/ui/menu/left_menu_1024_768.png");
+        this.background = ImageLoader.loadImage("res/ui/menu/left_menu_1024_768_2.png");
         this.aabb = new AABB(new Float2(1, (container.getHeight() - this.background.getHeight())), new Float2(this.background.getWidth(), this.background.getHeight()));
+        
+        UV.leftMenuWidth = this.background.getWidth();
+        UV.leftMenuHeight = this.background.getHeight();
+        
+        UV.leftMenuResolutionWidth = container.getWidth() - UV.leftMenuWidth;
+        UV.leftMenuResolutionHeight = container.getHeight() - UV.leftMenuHeight;
         
         this.buttons.add(new ConstructionButton());
         this.buttons.add(new TileButton());
         this.buttons.add(new PeasantButton());
         
-        this.constructionButtons.add(new House1Button());
+        this.constructionButtons.add(new BakeryButton());
         this.constructionButtons.add(new CubeButton());
         this.constructionButtons.add(new StorageButton());
         
@@ -48,6 +54,7 @@ public class LeftMenu extends Menu {
         this.tileButtons.add(new RoadButton());
         
         this.peasantButtons.add(new SerfButton());
+        this.peasantButtons.add(new BuilderButton());
         
         for (Button button : buttons) {
             button.init(container, this.background);

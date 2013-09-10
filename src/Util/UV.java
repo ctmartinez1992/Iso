@@ -3,9 +3,11 @@ package Util;
 import Build.Build;
 import Entity.Entity;
 import Tile.Tile;
+import Util.Loader.ImageLoader;
 import Util.Math.Int2;
 import Util.Math.Int3;
 import java.util.ArrayList;
+import org.newdawn.slick.geom.Vector2f;
 
 /**
  * UV stands for "Universal Values"
@@ -17,8 +19,14 @@ import java.util.ArrayList;
  */
 public class UV {
     
+    //Used for Isometric coordinates.
+    public static Vector2f origin;
+    
     //The build that's going to be constructed.
     public static Build choosingBuild;
+    
+    //A build that was clicked on.
+    public static Build selectedBuild;
     
     //The tile that's going to be constructed.
     public static Tile choosingTile;
@@ -51,6 +59,14 @@ public class UV {
     //Position of the mouse in isometric coordinates.
     public static int mapX;
     public static int mapY;
+    
+    //Dimensions of the Left Menu.
+    public static int leftMenuWidth;
+    public static int leftMenuHeight;
+    
+    //Space in Resolution and Left Menu Dimensions
+    public static int leftMenuResolutionWidth;
+    public static int leftMenuResolutionHeight;
     
     //Is the cursor on top of any menu? If so, only update the gui stuff.
     public static boolean mouseOnMenu = false;

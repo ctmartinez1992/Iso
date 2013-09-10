@@ -28,8 +28,8 @@ public class ConstructionButton extends Button {
         this.backgroundCurrent = this.background;
         this.content = ImageLoader.loadImage("res/ui/icon/construction_icon_1024_768.png");
         
-        this.position = new AABB(new Float2(4, (container.getHeight() - menu.getHeight() + 4)), new Float2(this.background.getWidth(), this.background.getHeight()));
-        this.contentPosition = new Int2(9, (container.getHeight() - menu.getHeight()) + 9);
+        this.position = new AABB(new Float2(6, (container.getHeight() - menu.getHeight() + 14)), new Float2(this.background.getWidth(), this.background.getHeight()));
+        this.contentPosition = new Int2(11, (container.getHeight() - menu.getHeight()) + 19);
     }
 
     @Override
@@ -67,6 +67,7 @@ public class ConstructionButton extends Button {
             GUI.falseTileVariables();
             GUI.falsePeasantVariables();
             GUI.falseShowVariables();
+            GUI.falseShowBuildMenuVariables();
             
             GUI.buttonChoosedBuilding = true;
             GUI.showConstructionLeftMenu = true;

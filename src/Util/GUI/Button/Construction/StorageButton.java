@@ -1,6 +1,6 @@
 package Util.GUI.Button.Construction;
 
-import Build.StorageBuild;
+import Build.Storage.StorageBuild;
 import Util.AABB;
 import Util.GUI.Button.Button;
 import Util.GUI.GUI;
@@ -30,8 +30,8 @@ public class StorageButton extends Button {
         this.backgroundCurrent = this.background;
         this.content = ImageLoader.loadImage("res/build/storage/storage_BR.png");
         
-        this.position = new AABB(new Float2(108, (container.getHeight() - menu.getHeight() + 68)), new Float2(this.background.getWidth(), this.background.getHeight()));
-        this.contentPosition = new Int2(114, (container.getHeight() - menu.getHeight()) + 76);
+        this.position = new AABB(new Float2(110, (container.getHeight() - menu.getHeight() + 88)), new Float2(this.background.getWidth(), this.background.getHeight()));
+        this.contentPosition = new Int2(116, (container.getHeight() - menu.getHeight()) + 96);
     }
 
     @Override
@@ -69,6 +69,7 @@ public class StorageButton extends Button {
             GUI.falseContructionVariables();
             GUI.falseTileVariables();
             GUI.falsePeasantVariables();
+            GUI.falseShowBuildMenuVariables();
             
             GUI.buttonChoosedStorage = true;
             

@@ -34,7 +34,7 @@ public class SoundManager {
         tom4 = MainSound.loadSound("sound/sound/test/tom4.wav");
         triangle = MainSound.loadSound("sound/sound/test/triangle.wav");
         
-        playMusic(ruins);
+        //playMusic(ruins);
     }
     
     public static void shutdown() {

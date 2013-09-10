@@ -204,8 +204,8 @@ public class Mixer {
                 int finalLeftValue = (int) leftValue;
                 int finalRightValue = (int) rightValue;
                 
-                finalLeftValue = MyMath.interval(finalLeftValue, Short.MIN_VALUE, Short.MAX_VALUE);
-                finalRightValue = MyMath.interval(finalRightValue, Short.MIN_VALUE, Short.MAX_VALUE);
+                finalLeftValue = MyMath.clamp(finalLeftValue, Short.MIN_VALUE, Short.MAX_VALUE);
+                finalRightValue = MyMath.clamp(finalRightValue, Short.MIN_VALUE, Short.MAX_VALUE);
                 
                 //Left.
                 data[i + 1] = (byte) ((finalLeftValue >> 8) & 0xFF);            //MSB

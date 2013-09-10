@@ -30,8 +30,8 @@ public class GrassButton extends Button {
         this.backgroundCurrent = this.background;
         this.content = ImageLoader.loadImage("res/tiles/grass.png");
         
-        this.position = new AABB(new Float2(4, (container.getHeight() - menu.getHeight() + 68)), new Float2(this.background.getWidth(), this.background.getHeight()));
-        this.contentPosition = new Int2(6, (container.getHeight() - menu.getHeight()) + 80);
+        this.position = new AABB(new Float2(6, (container.getHeight() - menu.getHeight() + 88)), new Float2(this.background.getWidth(), this.background.getHeight()));
+        this.contentPosition = new Int2(8, (container.getHeight() - menu.getHeight()) + 100);
     }
 
     @Override
@@ -67,6 +67,8 @@ public class GrassButton extends Button {
         GUI.buttonBeingClickedGrassTile = false;
         if (position.contains(UV.mouseX, UV.mouseY)) {
             GUI.falseTileVariables();
+            GUI.falseShowBuildMenuVariables();
+            
             GUI.buttonChoosedGrassTile = true;
             
             UV.choosingTile = new NormalGrassTile();

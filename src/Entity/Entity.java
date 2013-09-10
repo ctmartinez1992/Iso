@@ -1,6 +1,8 @@
 package Entity;
 
+import Build.Build;
 import Util.Math.Int2;
+import java.util.ArrayList;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -13,9 +15,10 @@ import org.newdawn.slick.geom.Vector2f;
 public abstract class Entity {
     
     protected Vector2f position;
+    protected Int2 gridPosition;
+    
     protected Image image;
     
-    private Int2 namePosition;
     protected String name;
     protected boolean showName;
     
@@ -23,13 +26,15 @@ public abstract class Entity {
         
     }
     
-    public abstract Entity init(int x, int y);
-    public abstract void update(GameContainer container);
+    public abstract Entity init(int x, int y, int gridX, int gridY);
+    public abstract void update(GameContainer container, ArrayList<Build> builds);
     public abstract void render(GameContainer container, Graphics graphics);
     public abstract void renderTranslucent(GameContainer container, Graphics graphics, boolean doPeasant);
     
     public void setPosition(Vector2f position) {
-        this.position.set(position);
+        if (this.position != null) {
+            this.position.set(position);
+        }
     }
     
     public void setPosition(float x, float y) {
@@ -40,15 +45,17 @@ public abstract class Entity {
         return this.position;
     }
 
-    public void setNamePosition(Int2 namePosition) {
-        this.namePosition = namePosition.copy();
+    public void setGridPosition(Int2 gridPosition) {
+        this.gridPosition = gridPosition.copy();
     }
 
-    public void setNamePosition(int x, int y) {
-        this.namePosition.set(x, y);
+    public void setGridPosition(int x, int y) {
+        if (this.gridPosition != null) {
+            this.gridPosition.set(x, y);
+        }
     }
     
-    public Int2 getNamePosition() {
-        return this.namePosition;
+    public Int2 getgridPosition() {
+        return this.gridPosition;
     }
 }

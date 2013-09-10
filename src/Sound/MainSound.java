@@ -677,7 +677,7 @@ public class MainSound {
             for (int i = 0, j = 0; i < data.length; i++, j += 2) {
                 double floatVal = (double) data[i];
                 floatVal /= (floatVal < 0) ? 128 : 127;
-                floatVal = MyMath.interval(floatVal, -1.0, 1.0);
+                floatVal = MyMath.clamp(floatVal, -1.0, 1.0);
                 
                 int val = (int) (floatVal * Short.MAX_VALUE);
                 
@@ -727,8 +727,8 @@ public class MainSound {
                 
                 leftFloatVal /= (leftFloatVal < 0) ? 128 : 127;
                 rightFloatVal /= (rightFloatVal < 0) ? 128 : 127;
-                leftFloatVal = MyMath.interval(leftFloatVal, -1.0, 1.0);
-                rightFloatVal = MyMath.interval(rightFloatVal, -1.0, 1.0);
+                leftFloatVal = MyMath.clamp(leftFloatVal, -1.0, 1.0);
+                rightFloatVal = MyMath.clamp(rightFloatVal, -1.0, 1.0);
                 
                 int leftVal = (int) (leftFloatVal * Short.MAX_VALUE);
                 int rightVal = (int) (rightFloatVal * Short.MAX_VALUE);

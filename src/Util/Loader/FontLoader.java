@@ -13,10 +13,12 @@ import org.newdawn.slick.TrueTypeFont;
  */
 public class FontLoader {
     
-    public static TrueTypeFont arialFont;
+    public static TrueTypeFont arialFont10;
+    public static TrueTypeFont arialFont16;
     
     public static void init() {
-        arialFont = getTrueTypeFont("arial", Font.BOLD, 10);
+        arialFont10 = getTrueTypeFont("arial", Font.BOLD, 10);
+        arialFont16 = getTrueTypeFont("arial", Font.BOLD, 16);
     }
 
     private static TrueTypeFont getTrueTypeFont(String name, int type, int size) {
@@ -35,6 +37,10 @@ public class FontLoader {
         }
         
         return font;
+    }
+    
+    public static int getStringWidth(TrueTypeFont font, String string) {
+        return font.getWidth(string);
     }
     
 }

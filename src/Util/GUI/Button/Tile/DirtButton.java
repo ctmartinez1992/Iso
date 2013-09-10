@@ -30,8 +30,8 @@ public class DirtButton extends Button {
         this.backgroundCurrent = this.background;
         this.content = ImageLoader.loadImage("res/tiles/dirt.png");
         
-        this.position = new AABB(new Float2(56, (container.getHeight() - menu.getHeight() + 68)), new Float2(this.background.getWidth(), this.background.getHeight()));
-        this.contentPosition = new Int2(58, (container.getHeight() - menu.getHeight()) + 80);
+        this.position = new AABB(new Float2(58, (container.getHeight() - menu.getHeight() + 88)), new Float2(this.background.getWidth(), this.background.getHeight()));
+        this.contentPosition = new Int2(60, (container.getHeight() - menu.getHeight()) + 100);
     }
 
     @Override
@@ -67,6 +67,8 @@ public class DirtButton extends Button {
         GUI.buttonBeingClickedDirtTile = false;
         if (position.contains(UV.mouseX, UV.mouseY)) {
             GUI.falseTileVariables();
+            GUI.falseShowBuildMenuVariables();
+            
             GUI.buttonChoosedDirtTile = true;
             
             UV.choosingTile = new NormalDirtTile();
